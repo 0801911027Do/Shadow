@@ -267,16 +267,16 @@
         <!-- Main Link Buttons -->
         <section class="w-full flex flex-col items-center">
             
-            <!-- Link 1: Pokedex -->
-            <a href="https://pokedex-project1-livid.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-btn group">
+            <!-- Link 1: Pokedex (เพิ่มโค้ดบังคับเปิดนอกแอป) -->
+            <a href="https://pokedex-project1-livid.vercel.app/" onclick="forceOpenExternal(event, 'https://pokedex-project1-livid.vercel.app/')" target="_blank" rel="noopener noreferrer" class="link-btn group">
                 <div class="btn-icon bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 border-yellow-500/30 group-hover:border-yellow-400">
                     <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pokemon" class="w-[120%] h-[120%] object-contain drop-shadow-lg">
                 </div>
                 <span class="btn-text text-slate-100 group-hover:text-white transition-colors">โปเกเด็กซ์</span>
             </a>
 
-            <!-- Link 2: EasyDonate -->
-            <a href="https://easydonate.app/shadowoi_k2" target="_blank" rel="noopener noreferrer" class="link-btn group">
+            <!-- Link 2: EasyDonate (เพิ่มโค้ดบังคับเปิดนอกแอป) -->
+            <a href="https://easydonate.app/shadowoi_k2" onclick="forceOpenExternal(event, 'https://easydonate.app/shadowoi_k2')" target="_blank" rel="noopener noreferrer" class="link-btn group">
                 <div class="btn-icon bg-gradient-to-br from-[#0c2e4e] to-[#267296] border-blue-400/30 group-hover:border-cyan-400">
                     <img src="easydonate.jpg" alt="EasyDonate" class="w-full h-full object-cover">
                 </div>
@@ -378,6 +378,29 @@
 
         init();
         draw();
+
+        // ==========================================
+        // โค้ดพิเศษ: บังคับเปิด Browser ข้างนอก (Bypass In-App Browser)
+        // ==========================================
+        function forceOpenExternal(e, url) {
+            e.preventDefault(); // ป้องกันการเปิดลิงก์แบบปกติที่ทำให้ติดบล็อก
+            
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isAndroid = /android/i.test(ua);
+            
+            // ตรวจจับแอปที่ชอบบล็อก (TikTok, LINE, Facebook, IG)
+            const isInAppBrowser = /TikTok|Bytedance|Line|FBAN|FBAV|Instagram/i.test(ua);
+
+            if (isAndroid && isInAppBrowser) {
+                // เทคนิค Intent: บังคับเครื่อง Android ให้เด้งไปเปิดแอป Google Chrome ทันที
+                const cleanUrl = url.replace(/^https?:\/\//, '');
+                const intentUrl = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end;`;
+                window.location.href = intentUrl;
+            } else {
+                // สำหรับ iOS (iPhone) หรือคนที่เปิดในเบราว์เซอร์ปกติอยู่แล้ว ให้เปิดแท็บใหม่ตามปกติ
+                window.open(url, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
